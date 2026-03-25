@@ -157,10 +157,7 @@ export default function LandingPage() {
       >
         <div className="flex flex-wrap items-baseline gap-2 md:gap-3 min-w-0">
           <span className="text-sm md:text-xl font-bold leading-tight" style={{ color: '#FFFFFF' }}>
-            KEY PERSON OF INFLUENCE
-          </span>
-          <span className="text-xs md:text-sm" style={{ color: '#A0AABF' }}>
-            Key Person of Influence
+            NEW AGE PARENTING
           </span>
         </div>
       </nav>
@@ -187,9 +184,9 @@ export default function LandingPage() {
           >
             Are you truly the{" "}
             <span className="block md:inline md:whitespace-nowrap" style={{ color: CORAL }}>
-              key person of Influence
+              Key Person of Influence
             </span>{" "}
-            in your child&apos;s education and career?
+            in your child&apos;s Education and Career?
           </motion.h1>
 
           <motion.p
