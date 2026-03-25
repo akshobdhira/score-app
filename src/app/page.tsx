@@ -3,6 +3,7 @@
 // NOTE: recharts is NOT yet installed. Run: npm install recharts
 // After installing, the RadarChart will render correctly.
 
+import React from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -59,15 +60,32 @@ const fadeIn = {
   }),
 }
 
+// ─── Mobile detection hook ────────────────────────────────────────────────────
+function useIsMobile() {
+  const [isMobile, setIsMobile] = React.useState(false)
+  React.useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768)
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
+  }, [])
+  return isMobile
+}
+
 // ─── Reusable mini radar chart ────────────────────────────────────────────────
 function MiniRadar({ dark = false }: { dark?: boolean }) {
+  const isMobile = useIsMobile()
   return (
-    <ResponsiveContainer width="100%" height={260}>
-      <RadarChart outerRadius="55%" data={radarData}>
+    <ResponsiveContainer width="100%" height={isMobile ? 300 : 380}>
+      <RadarChart
+        outerRadius={isMobile ? "35%" : "45%"}
+        data={radarData}
+        margin={isMobile ? { top: 30, right: 40, bottom: 30, left: 40 } : { top: 5, right: 5, bottom: 5, left: 5 }}
+      >
         <PolarGrid stroke={dark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)'} />
         <PolarAngleAxis
           dataKey="category"
-          tick={{ fontSize: 8, fill: dark ? '#CCCCCC' : '#555555' }}
+          tick={{ fontSize: isMobile ? 8 : 10, fill: dark ? '#CCCCCC' : '#555555' }}
         />
         <PolarRadiusAxis tick={false} axisLine={false} />
         <Radar
@@ -251,7 +269,7 @@ export default function LandingPage() {
                 KEY PERSON OF INFLUENCE
               </p>
               <p className="text-xl font-bold mb-3" style={{ color: CORAL }}>
-                Pillars of Parenting Influence
+                Pillars of New Age Parenting
               </p>
               <p className="text-sm mb-7" style={{ color: BODY_TEXT }}>
                 Benchmark your influence on your child&apos;s future.
@@ -304,10 +322,10 @@ export default function LandingPage() {
                     fontWeight: 700,
                   }}
                 >
-                  Your Profile
+                  Your Sample Profile
                 </p>
                 <p className="text-sm font-medium mb-1" style={{ color: BODY_TEXT }}>
-                  Your overall score:
+                  Your Sample score:
                 </p>
                 <p className="text-4xl font-black" style={{ color: CORAL }}>
                   76%
@@ -316,8 +334,8 @@ export default function LandingPage() {
 
               {/* Radar chart */}
               <div
-                className="w-full max-w-xs mx-auto flex justify-center items-center pt-2 pb-2"
-                style={{ minHeight: 280 }}
+                className="w-full max-w-sm mx-auto flex justify-center items-center pt-2 pb-2"
+                style={{ minHeight: 300, overflow: 'visible' }}
               >
                 <MiniRadar />
               </div>
@@ -406,22 +424,25 @@ export default function LandingPage() {
             transition={{ duration: 0.5 }}
             className="rounded-2xl p-6 md:p-8 flex flex-col items-center w-full"
             style={{
-              backgroundColor: NAVY,
+              backgroundColor: BG_LIGHT,
               borderRadius: 12,
               boxShadow: '0 4px 20px rgba(0,0,0,0.18)',
             }}
           >
             <p
               className="text-base font-semibold text-center mb-6"
-              style={{ color: '#E5E7EB' }}
+              style={{ color: NAVY }}
             >
               Find out how influential you are in your child&apos;s career.
             </p>
-            <div
-              className="w-full max-w-xs mx-auto flex justify-center items-center pt-2 pb-2"
-              style={{ minHeight: 280 }}
-            >
-              <MiniRadar dark />
+            <div className="w-full flex justify-center items-center pt-2 pb-2">
+              <Image
+                src="/sample-profile.png"
+                alt="Sample Profile"
+                width={400}
+                height={400}
+                className="w-full max-w-xs md:max-w-sm h-auto object-contain"
+              />
             </div>
           </motion.div>
         </div>
