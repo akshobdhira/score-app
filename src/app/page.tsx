@@ -437,8 +437,8 @@ export default function LandingPage() {
             </p>
             <div className="w-full flex justify-center items-center pt-2 pb-2">
               <Image
-                src="/sample-profile.png"
-                alt="Sample Profile"
+                src="/parents.png"
+                alt="How It Works"
                 width={400}
                 height={400}
                 className="w-full max-w-xs md:max-w-sm h-auto object-contain"
