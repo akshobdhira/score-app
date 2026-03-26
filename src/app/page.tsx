@@ -641,16 +641,6 @@ export default function LandingPage() {
             Copyright &copy; 2025 KEY PERSON OF INFLUENCE. All Rights Reserved.
           </p>
 
-          {/* Right — badge */}
-          <p
-            className="text-xs font-medium px-3 py-1.5 rounded-full"
-            style={{
-              color: '#9CA3AF',
-              border: '1px solid #E5E7EB',
-            }}
-          >
-            Powered by KEY PERSON OF INFLUENCE
-          </p>
         </div>
       </footer>
     </div>
