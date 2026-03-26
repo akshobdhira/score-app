@@ -133,31 +133,31 @@ const categories = [
 const testimonials = [
   {
     quote:
-      'Since taking the Score assessment I now know exactly where I was falling short. My son got into his dream college 6 months later.',
-    name: 'Ramesh K.',
-    title: 'Parent, Bangalore',
-    initials: 'RK',
+      'I scored well in Support but poorly in Adaptability. That result alone changed how I respond when my child talks about unconventional careers.',
+    name: 'Priya S.',
+    title: 'Parent, Coimbatore',
+    initials: 'PS',
   },
   {
     quote:
-      'I thought I was doing everything right. The results were a reality check — and the best thing that happened to us.',
-    name: 'Sunita M.',
+      'As a busy parent, I doubted a quiz could help. It did. The 5 categories made my blind spots visible. My relationship with my child improved far better now.',
+    name: 'Arvind M.',
     title: 'Parent, Mumbai',
-    initials: 'SM',
+    initials: 'AM',
   },
   {
     quote:
-      'The category breakdown showed me I was great at guidance but weak on financial planning. Game changer.',
-    name: 'Arjun P.',
+      'Professional, clean, and surprisingly accurate. The feedback felt personally written for me. I shared it with my spouse and we aligned our approach together.',
+    name: 'Salma N.',
     title: 'Parent, Hyderabad',
-    initials: 'AP',
+    initials: 'SN',
   },
   {
     quote:
-      'I shared this with my husband and we both took it. We had our most productive conversation about our daughter\'s future the same evening.',
-    name: 'Meera T.',
-    title: 'Parent, Chennai',
-    initials: 'MT',
+      'Finally, something built for Indian parents! The categories reflect real challenges we face. My Engagement score motivated me to do better immediately.',
+    name: 'Anitha V.',
+    title: 'Parent, Madurai',
+    initials: 'AV',
   },
 ]
 
@@ -489,90 +489,35 @@ export default function LandingPage() {
               </Link>
             </div>
 
-            {/* 5-category ring — flex-wrap on mobile, ring layout on md+ */}
-            <div className="mt-4">
-              {/* Mobile: simple flex wrap grid */}
-              <div className="flex flex-wrap justify-center gap-4 md:hidden">
-                {[
-                  { label: 'Guidance & Communication', angle: -90 },
-                  { label: 'Awareness & Exposure', angle: -18 },
-                  { label: 'Engagement & Support Habits', angle: 54 },
-                  { label: 'Planning & Financial Readiness', angle: 126 },
-                  { label: 'Mindset & Adaptability', angle: 198 },
-                ].map((item, i) => (
-                  <motion.div
-                    key={item.label}
-                    custom={i}
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true }}
-                    variants={fadeIn}
-                    className="flex flex-col items-center w-24"
-                  >
-                    <div
-                      className="w-10 h-10 rounded-full flex items-center justify-center text-white text-xs font-bold mb-1 shadow"
-                      style={{ backgroundColor: i % 2 === 0 ? CORAL : NAVY }}
-                    >
-                      {item.label[0]}
-                    </div>
-                    <span
-                      className="text-xs font-medium text-center"
-                      style={{ color: NAVY, fontSize: '10px' }}
-                    >
-                      {item.label}
-                    </span>
-                  </motion.div>
-                ))}
-              </div>
-
-              {/* Desktop: original ring layout */}
-              <div className="relative hidden md:flex items-center justify-center">
-                <div className="relative w-56 h-56">
-                  {[
-                    { label: 'Guidance & Communication', angle: -90 },
-                    { label: 'Awareness & Exposure', angle: -18 },
-                    { label: 'Engagement & Support Habits', angle: 54 },
-                    { label: 'Planning & Financial Readiness', angle: 126 },
-                    { label: 'Mindset & Adaptability', angle: 198 },
-                  ].map((item, i) => {
-                    const rad = (item.angle * Math.PI) / 180
-                    const cx = 50 + 42 * Math.cos(rad)
-                    const cy = 50 + 42 * Math.sin(rad)
-                    return (
-                      <motion.div
-                        key={item.label}
-                        custom={i}
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{ once: true }}
-                        variants={fadeIn}
-                        className="absolute flex flex-col items-center"
-                        style={{
-                          left: `${cx}%`,
-                          top: `${cy}%`,
-                          transform: 'translate(-50%, -50%)',
-                        }}
-                      >
-                        <div
-                          className="w-10 h-10 rounded-full flex items-center justify-center text-white text-xs font-bold mb-1 shadow"
-                          style={{
-                            backgroundColor: i % 2 === 0 ? CORAL : NAVY,
-                          }}
-                        >
-                          {item.label[0]}
-                        </div>
-                        <span
-                          className="text-xs font-medium text-center whitespace-nowrap"
-                          style={{ color: NAVY, fontSize: '10px' }}
-                        >
-                          {item.label}
-                        </span>
-                      </motion.div>
-                    )
-                  })}
-                </div>
-              </div>
-            </div>
+            {/* Bullet point list */}
+            <ul className="mt-4 space-y-3">
+              {[
+                'Initiate Awareness',
+                'Mapping Strength',
+                'Purpose & Direction',
+                'Assess & Align',
+                'Coach not Control',
+                'Track & Transform',
+              ].map((item, i) => (
+                <motion.li
+                  key={item}
+                  custom={i}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true }}
+                  variants={fadeIn}
+                  className="flex items-center gap-3"
+                >
+                  <span
+                    className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+                    style={{ backgroundColor: CORAL }}
+                  />
+                  <span className="text-sm font-medium" style={{ color: NAVY }}>
+                    {item}
+                  </span>
+                </motion.li>
+              ))}
+            </ul>
           </motion.div>
         </div>
       </section>
@@ -589,10 +534,9 @@ export default function LandingPage() {
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
             className="font-light leading-relaxed mb-6"
-            style={{ fontSize: 'clamp(18px, 2.5vw, 28px)', color: '#FFFFFF' }}
+            style={{ fontSize: 'clamp(14px, 1.8vw, 20px)', color: '#FFFFFF' }}
           >
-            &ldquo;Within 3 months of taking the Score assessment, I completely
-            transformed how I guide my child&apos;s career path.&rdquo;
+            &ldquo;The quiz pinpointed I was weak in Planning. I never realized it! Now I&apos;m having structured career talks with my daughter. Truly eye-opening for any parent.&rdquo;
           </motion.blockquote>
           <motion.p
             initial={{ opacity: 0 }}
@@ -602,21 +546,10 @@ export default function LandingPage() {
             className="text-sm font-semibold"
             style={{ color: CORAL }}
           >
-            Priya Sharma | Parent, Grade 11 Student
+            — Meena R., Chennai
           </motion.p>
         </div>
 
-        {/* Decorative coral half-circle */}
-        <div
-          className="absolute bottom-0 left-1/2 -translate-x-1/2"
-          style={{
-            width: 120,
-            height: 60,
-            backgroundColor: CORAL,
-            borderRadius: '60px 60px 0 0',
-            opacity: 0.25,
-          }}
-        />
       </section>
 
       {/* ─── SECTION 7: Testimonials Grid ─────────────────────────────────── */}
@@ -699,7 +632,7 @@ export default function LandingPage() {
               KEY PERSON OF INFLUENCE
             </p>
             <p className="text-xs font-medium" style={{ color: CORAL }}>
-              Key Person of Influence
+              New Age Parenting
             </p>
           </div>
 
