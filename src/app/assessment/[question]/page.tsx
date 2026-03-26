@@ -112,7 +112,7 @@ export default function QuestionPage() {
       </header>
 
       {/* Question card */}
-      <main className="flex-1 flex flex-col px-5 py-6 max-w-xl mx-auto w-full">
+      <main className="flex-1 flex flex-col px-5 py-10 max-w-3xl mx-auto w-full">
         <AnimatePresence mode="wait">
           <motion.div
             key={questionNumber}
@@ -128,13 +128,19 @@ export default function QuestionPage() {
               transition={{ duration: 0.4 }}
             >
               <p className="text-xs font-semibold text-gray-400 mb-2">Q{questionNumber}</p>
-              <h2 className="text-xl font-bold leading-snug" style={{ color: '#1A1A2E' }}>
+              <h2
+                className="font-serif text-3xl md:text-4xl font-normal leading-snug"
+                style={{ color: '#1A1A2E' }}
+              >
                 {question.text}
               </h2>
+              <p className="text-sm italic text-gray-400 mt-2">
+                Select the option that best describes you
+              </p>
             </motion.div>
 
             {/* Options */}
-            <div className="flex flex-col md:flex-row gap-3 md:gap-4 md:justify-center mt-2">
+            <div className="flex flex-col sm:flex-row gap-4 mt-8">
               {question.options.map((option) => {
                 const isSelected = selected === option.score
                 return (
@@ -142,24 +148,14 @@ export default function QuestionPage() {
                     key={option.score}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => handleSelect(option.score)}
-                    className="w-full text-left px-5 py-4 rounded-2xl border-2 transition-all font-medium text-sm flex items-center gap-3"
+                    className={`flex-1 text-center px-6 py-8 rounded-2xl transition-all font-medium text-lg${
+                      !isSelected ? ' hover:bg-gray-200' : ''
+                    }`}
                     style={{
-                      backgroundColor: isSelected ? '#1A1A2E' : '#FFFFFF',
-                      borderColor: isSelected ? '#1A1A2E' : '#E5E7EB',
+                      backgroundColor: isSelected ? '#1A1A2E' : '#F3F4F6',
                       color: isSelected ? '#FFFFFF' : '#1A1A2E',
                     }}
                   >
-                    <span
-                      className="w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center"
-                      style={{
-                        borderColor: isSelected ? '#E94560' : '#CBD5E1',
-                        backgroundColor: isSelected ? '#E94560' : 'transparent',
-                      }}
-                    >
-                      {isSelected && (
-                        <span className="w-2 h-2 rounded-full bg-white block" />
-                      )}
-                    </span>
                     {option.text}
                   </motion.button>
                 )
