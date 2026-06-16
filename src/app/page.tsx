@@ -1,8 +1,5 @@
 'use client'
 
-// NOTE: recharts is NOT yet installed. Run: npm install recharts
-// After installing, the RadarChart will render correctly.
-
 import React from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'

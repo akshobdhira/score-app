@@ -16,7 +16,6 @@ export default function LeadCapturePage() {
   const router = useRouter()
   const [form, setForm] = useState({
     childClass: '',
-    childSchool: '',
     childBoard: '',
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -25,7 +24,6 @@ export default function LeadCapturePage() {
   function validate() {
     const e: Record<string, string> = {}
     if (!form.childClass) e.childClass = 'Please select your child\'s class'
-    if (!form.childSchool.trim()) e.childSchool = 'Please enter the school name'
     if (!form.childBoard) e.childBoard = 'Please select the board'
     setErrors(e)
     return Object.keys(e).length === 0
@@ -36,20 +34,19 @@ export default function LeadCapturePage() {
     if (!validate()) return
     setLoading(true)
 
-    const resultRaw = sessionStorage.getItem('score_result')
-    if (!resultRaw) { router.push('/'); return }
-    const result = JSON.parse(resultRaw)
+    const submissionId = sessionStorage.getItem('score_submission_id')
+    if (!submissionId) { router.push('/'); return }
 
     try {
-      const res = await fetch('/api/submit', {
-        method: 'POST',
+      await fetch('/api/submit', {
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, result }),
+        body: JSON.stringify({
+          submissionId,
+          childClass: form.childClass,
+          childBoard: form.childBoard,
+        }),
       })
-      const data = await res.json()
-      if (data.submissionId) {
-        sessionStorage.setItem('score_submission_id', data.submissionId)
-      }
       sessionStorage.setItem('score_child_info', JSON.stringify(form))
       router.push('/thank-you')
     } catch {
@@ -107,27 +104,6 @@ export default function LeadCapturePage() {
               </select>
               {errors.childClass && (
                 <p className="text-xs mt-1" style={{ color: '#E74C3C' }}>{errors.childClass}</p>
-              )}
-            </div>
-
-            {/* School name */}
-            <div>
-              <label className="block text-sm font-semibold mb-1.5" style={{ color: '#1A1A2E' }}>
-                Child&apos;s School Name *
-              </label>
-              <input
-                type="text"
-                placeholder="e.g. Delhi Public School"
-                value={form.childSchool}
-                onChange={(e) => setForm({ ...form, childSchool: e.target.value })}
-                className="w-full border-2 rounded-xl px-4 py-3 text-sm outline-none"
-                style={{
-                  borderColor: errors.childSchool ? '#E74C3C' : '#E5E7EB',
-                  color: '#1A1A2E',
-                }}
-              />
-              {errors.childSchool && (
-                <p className="text-xs mt-1" style={{ color: '#E74C3C' }}>{errors.childSchool}</p>
               )}
             </div>
 

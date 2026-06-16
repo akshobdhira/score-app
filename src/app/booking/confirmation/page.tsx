@@ -27,19 +27,19 @@ export default function BookingConfirmationPage() {
           </div>
 
           <h2 className="text-2xl font-bold mb-3" style={{ color: '#1A1A2E' }}>
-            Booking Request Received!
+            You&apos;re Booked!
           </h2>
 
           <p className="text-gray-500 text-sm mb-6 leading-relaxed">
-            Thank you for taking this step. Our team will review your details and reach out to confirm your consultation slot within <strong>24–48 hours</strong>.
+            Your slot is confirmed. Check your email for a calendar invite with the Google Meet link — we can&apos;t wait to meet you!
           </p>
 
           <div className="bg-gray-50 rounded-2xl p-4 mb-6 text-left">
             <p className="text-sm font-semibold mb-2" style={{ color: '#1A1A2E' }}>What happens next:</p>
             <ul className="text-sm text-gray-500 flex flex-col gap-1.5">
-              <li className="flex gap-2"><span style={{ color: '#27AE60' }}>1.</span> We review your assessment results and booking details</li>
-              <li className="flex gap-2"><span style={{ color: '#27AE60' }}>2.</span> A counsellor will call or WhatsApp you to confirm the slot</li>
-              <li className="flex gap-2"><span style={{ color: '#27AE60' }}>3.</span> Your personalised 1-on-1 session takes place</li>
+              <li className="flex gap-2"><span style={{ color: '#27AE60' }}>1.</span> Check your inbox — you&apos;ll get a calendar invite with the Google Meet link</li>
+              <li className="flex gap-2"><span style={{ color: '#27AE60' }}>2.</span> Our expert reviews your SCORE assessment results before the session</li>
+              <li className="flex gap-2"><span style={{ color: '#27AE60' }}>3.</span> Join your personalised 1-on-1 session at the scheduled time</li>
             </ul>
           </div>
 

@@ -1,9 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase'
+import { checkRateLimit, getIP, isValidOrigin } from '@/lib/rateLimit'
+import { bookingSchema } from '@/lib/schemas'
 
 export async function POST(req: NextRequest) {
+  if (!isValidOrigin(req)) {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  }
+
+  const ip = getIP(req)
+  const { allowed } = await checkRateLimit(`booking:${ip}`, 10, 5)
+  if (!allowed) {
+    return NextResponse.json(
+      { error: 'Too many requests. Please try again in 5 minutes.' },
+      { status: 429 }
+    )
+  }
+
   try {
     const body = await req.json()
+    const parsed = bookingSchema.safeParse(body)
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Invalid request data' }, { status: 400 })
+    }
     const {
       submissionId,
       parentName,
@@ -15,7 +34,7 @@ export async function POST(req: NextRequest) {
       careerGoals,
       preferredTimeSlot,
       additionalNotes,
-    } = body
+    } = parsed.data
 
     const supabase = createServiceClient()
 
@@ -45,7 +64,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true })
   } catch (err) {
-    console.error('Booking error:', err)
+    console.error('Booking error:', err instanceof Error ? err.message : err)
     return NextResponse.json({ error: 'Failed to save booking' }, { status: 500 })
   }
 }

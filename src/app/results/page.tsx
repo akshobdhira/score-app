@@ -248,7 +248,7 @@ export default function ResultsPage() {
   const shareText = encodeURIComponent(
     `I just scored ${normalizedScore.toFixed(1)}% on the SCORE Parenting Assessment! Find out your profile:`
   )
-  const shareUrl = encodeURIComponent('https://score-app.vercel.app/results')
+  const shareUrl = encodeURIComponent(`${window.location.origin}/results`)
   const whatsappUrl = `https://wa.me/?text=${shareText}%20${shareUrl}`
   const twitterUrl = `https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}`
   const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${shareUrl}`

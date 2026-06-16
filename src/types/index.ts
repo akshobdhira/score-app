@@ -64,15 +64,18 @@ export interface BookingData {
 export interface Submission {
   id: string
   created_at: string
-  child_class: string
-  child_school: string
-  child_board: string
+  child_class: string | null
+  child_school: string | null
+  child_board: string | null
   total_score: number
   max_score: number
   percentage: number
   profile_name: string
   category_scores: CategoryScore[]
   has_booking: boolean
+  parent_name: string | null
+  parent_mobile: string | null
+  parent_email: string | null
 }
 
 export interface Booking {

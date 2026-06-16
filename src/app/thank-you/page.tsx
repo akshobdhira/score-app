@@ -54,10 +54,11 @@ export default function ThankYouPage() {
     result.percentage >= 70 ? '#27AE60' : result.percentage >= 40 ? '#F39C12' : '#E74C3C'
 
   // Share URLs
+  const safePercentage = Math.max(0, Math.min(100, result.percentage))
   const shareText = encodeURIComponent(
-    `I just scored ${result.percentage}% on the SCORE Parenting Assessment! Find out your profile:`
+    `I just scored ${safePercentage}% on the SCORE Parenting Assessment! Find out your profile:`
   )
-  const shareUrl = encodeURIComponent('https://score-app.vercel.app/results')
+  const shareUrl = encodeURIComponent(`${window.location.origin}/results`)
   const whatsappUrl = `https://wa.me/?text=${shareText}%20${shareUrl}`
   const twitterUrl = `https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}`
   const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${shareUrl}`
