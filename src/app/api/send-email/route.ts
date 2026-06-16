@@ -7,8 +7,6 @@ import { getTemplate } from '@/lib/emailTemplates'
 import { isValidOrigin } from '@/lib/rateLimit'
 import { z } from 'zod'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
-
 const sendEmailSchema = z.object({
   recipients: z.array(z.object({
     submissionId: z.string().uuid(),
@@ -43,6 +41,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Unknown template' }, { status: 400 })
     }
 
+    const resend = new Resend(process.env.RESEND_API_KEY)
     const supabase = createServiceClient()
     const results: { submissionId: string; status: 'sent' | 'failed'; error?: string }[] = []
 
