@@ -3,8 +3,38 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { AssessmentResult } from '@/types'
+import { AssessmentResult, CategoryScore } from '@/types'
 import { generatePDF } from '@/lib/pdf'
+
+// ─── Profile Challenges Data ─────────────────────────────────────────────────
+
+const PROFILE_CHALLENGES: Record<string, string[]> = {
+  'outsourced-observer': [
+    'Lack of active engagement: You feel detached, relying on external sources to manage your child\'s career path.',
+    'Over-reliance on academic performance: Believing that high marks alone will guarantee future success.',
+    'Ignoring the child\'s emotional needs: The focus on grades often sidelines personal aspirations or emotional well-being.',
+  ],
+  'reactive-rescuer': [
+    'Crisis-driven decision-making: You respond to issues only when they manifest, leading to stress and missed opportunities.',
+    'Misplaced focus on grades: You continue to stress academic performance as the primary measure of success.',
+    'Unmet emotional needs: Your child may feel misunderstood or unsupported during critical moments.',
+  ],
+  'performance-pusher': [
+    'Overworking and burnout: Both you and your child are exhausted by the constant push for academic perfection.',
+    'Lack of emotional connection: The focus on results begins to damage your relationship with your child.',
+    'Missed opportunities for self-discovery: Your child may feel they are being moulded into someone they are not.',
+  ],
+  'concerned-companion': [
+    'Indecision and doubt: You don\'t know where to turn or who to trust for guidance.',
+    'Feeling inadequate: You\'re unsure how to offer real support, and fear you\'re not doing enough.',
+    'Increased stress: The uncertainty creates a tense home environment as everyone feels the weight of making the right choice.',
+  ],
+  'struggling-strategist': [
+    'Overwhelming choices: There are many aspects, and you risk seeking too much validation, missing authentic credentials, leading to exhaustion.',
+    'Weak profile development: Skill development might end up in random accumulation that may not be the best fit for the given opportunity.',
+    'Lack of personal branding: Not knowing where to showcase your child\'s talent and capability.',
+  ],
+}
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
@@ -20,6 +50,156 @@ function getStrengthLabel(pct: number): string {
   if (pct < 60) return 'Low to Average'
   if (pct < 75) return 'Average to High'
   return 'High Strength'
+}
+
+// ─── Spider / Radar Chart ────────────────────────────────────────────────────
+
+function SpiderChart({ categoryScores }: { categoryScores: CategoryScore[] }) {
+  const cx = 210
+  const cy = 205
+  const maxR = 115
+  const N = categoryScores.length
+
+  const angles = categoryScores.map((_, i) => (2 * Math.PI * i) / N - Math.PI / 2)
+  const gridLevels = [0.25, 0.5, 0.75, 1.0]
+
+  function ringPoints(level: number) {
+    return angles
+      .map(a => `${cx + level * maxR * Math.cos(a)},${cy + level * maxR * Math.sin(a)}`)
+      .join(' ')
+  }
+
+  const dataPoints = angles
+    .map((a, i) => {
+      const r = (categoryScores[i].percentage / 100) * maxR
+      return `${cx + r * Math.cos(a)},${cy + r * Math.sin(a)}`
+    })
+    .join(' ')
+
+  const labelR = maxR + 35
+  const shortLabels: Record<string, string[]> = {
+    'Guidance & Communication': ['Guidance &', 'Communication'],
+    'Awareness & Exposure': ['Awareness &', 'Exposure'],
+    'Engagement & Support Habits': ['Engagement &', 'Support'],
+    'Planning & Financial Readiness': ['Planning &', 'Financial'],
+    'Mindset & Adaptability': ['Mindset &', 'Adaptability'],
+  }
+
+  return (
+    <div className="flex flex-col items-center">
+      <p className="text-[#1A1A2E] font-bold text-lg md:text-xl text-center mb-2">
+        Your Skill Overview
+      </p>
+      <svg viewBox="0 0 420 430" className="w-full max-w-[450px] mx-auto">
+        {/* Grid rings */}
+        {gridLevels.map((level, li) => (
+          <polygon
+            key={li}
+            points={ringPoints(level)}
+            fill="none"
+            stroke="#6B7280"
+            strokeWidth={level === 1 ? 1.5 : 1}
+          />
+        ))}
+
+        {/* Axis lines */}
+        {angles.map((a, i) => (
+          <line
+            key={i}
+            x1={cx} y1={cy}
+            x2={cx + maxR * Math.cos(a)}
+            y2={cy + maxR * Math.sin(a)}
+            stroke="#6B7280"
+            strokeWidth={1}
+          />
+        ))}
+
+        {/* Filled data polygon */}
+        <polygon
+          points={dataPoints}
+          fill="rgba(233, 69, 96, 0.15)"
+          stroke="#E94560"
+          strokeWidth={2}
+          strokeLinejoin="round"
+        />
+
+        {/* Data point dots */}
+        {angles.map((a, i) => {
+          const r = (categoryScores[i].percentage / 100) * maxR
+          return (
+            <circle
+              key={i}
+              cx={cx + r * Math.cos(a)}
+              cy={cy + r * Math.sin(a)}
+              r={4}
+              fill="#E94560"
+              stroke="white"
+              strokeWidth={1.5}
+            />
+          )
+        })}
+
+        {/* Score % labels just outside each data point */}
+        {angles.map((a, i) => {
+          const r = Math.max((categoryScores[i].percentage / 100) * maxR, 18)
+          return (
+            <text
+              key={i}
+              x={cx + (r + 16) * Math.cos(a)}
+              y={cy + (r + 16) * Math.sin(a)}
+              textAnchor="middle"
+              dominantBaseline="middle"
+              fontSize="10"
+              fontWeight="700"
+              fill="#E94560"
+            >
+              {categoryScores[i].percentage.toFixed(0)}%
+            </text>
+          )
+        })}
+
+        {/* Category axis labels */}
+        {angles.map((a, i) => {
+          const lx = cx + labelR * Math.cos(a)
+          const ly = cy + labelR * Math.sin(a)
+          const cosA = Math.cos(a)
+          const anchor = cosA > 0.2 ? 'start' : cosA < -0.2 ? 'end' : 'middle'
+          const lines = shortLabels[categoryScores[i].category] ?? [categoryScores[i].category]
+          return (
+            <text
+              key={i}
+              x={lx}
+              y={ly}
+              textAnchor={anchor}
+              dominantBaseline="middle"
+              fontSize="9"
+              fontWeight="600"
+              fill="#374151"
+            >
+              {lines.map((line, li) => (
+                <tspan key={li} x={lx} dy={li === 0 ? (lines.length > 1 ? -7 : 0) : 14}>
+                  {line}
+                </tspan>
+              ))}
+            </text>
+          )
+        })}
+
+        {/* Grid level labels on top axis */}
+        {gridLevels.map((level, li) => (
+          <text
+            key={li}
+            x={cx + 4}
+            y={cy - level * maxR - 2}
+            fontSize="8"
+            fill="#9CA3AF"
+          >
+            {(level * 100).toFixed(0)}%
+          </text>
+        ))}
+      </svg>
+    </div>
+  )
 }
 
 // ─── Main Page ───────────────────────────────────────────────────────────────
@@ -145,6 +325,21 @@ export default function ThankYouPage() {
         </div>
       </section>
 
+      {/* ── Section 3.5: Spider Chart ── */}
+      <section className="bg-[#F5F7FF] px-4 pt-6 pb-0 md:px-12">
+        <div className="max-w-[700px] mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="bg-white rounded-2xl p-6"
+            style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}
+          >
+            <SpiderChart categoryScores={result.categoryScores} />
+          </motion.div>
+        </div>
+      </section>
+
       {/* ── Section 4: Strengths ── */}
       <section className="bg-[#F5F7FF] px-4 py-10 md:px-12">
         <div className="max-w-[700px] mx-auto">
@@ -206,6 +401,39 @@ export default function ThankYouPage() {
           </motion.div>
         </div>
       </section>
+
+      {/* ── Section 5.5: Challenges ── */}
+      {PROFILE_CHALLENGES[result.profile.id] && (
+        <section className="bg-[#F5F7FF] px-4 py-10 md:px-12">
+          <div className="max-w-[700px] mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="bg-white rounded-2xl border-l-4 border-amber-400 p-6"
+              style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.08)' }}
+            >
+              <h3 className="font-bold text-lg mb-4 flex items-center gap-2" style={{ color: '#F39C12' }}>
+                <span>⚡</span> Challenges at this stage
+              </h3>
+              <ul className="flex flex-col gap-3">
+                {PROFILE_CHALLENGES[result.profile.id].map((challenge, i) => (
+                  <motion.li
+                    key={i}
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.15 }}
+                    className="text-sm text-gray-600 flex gap-2"
+                  >
+                    <span style={{ color: '#F39C12' }}>⚡</span> {challenge}
+                  </motion.li>
+                ))}
+              </ul>
+            </motion.div>
+          </div>
+        </section>
+      )}
 
       {/* ── Section 6: Action Buttons ── */}
       <section className="bg-[#F5F7FF] px-4 py-12 md:px-12">

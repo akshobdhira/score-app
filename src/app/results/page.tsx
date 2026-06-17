@@ -386,24 +386,60 @@ export default function ResultsPage() {
             <p className="text-gray-500 text-base mb-8 max-w-lg mx-auto">
               {firstSentence}...
             </p>
+          </motion.div>
+        </div>
 
-            {/* Other profiles teaser */}
-            <p className="text-gray-400 text-xs mb-3 uppercase tracking-wide">
-              Other Profiles
-            </p>
-            <div className="flex flex-wrap justify-center gap-2">
-              {otherProfiles.map((p) => (
+        {/* Profiles progression — wider container so all pills fit in one row */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="max-w-5xl mx-auto text-center"
+        >
+          <p className="text-gray-400 text-xs mb-4 uppercase tracking-wide">
+            Parenting Profiles
+          </p>
+
+          {/* Desktop: single horizontal row */}
+          <div className="hidden md:flex items-center justify-center">
+            {profiles.map((p, index) => (
+              <div key={p.name} className="flex items-center">
                 <span
-                  key={p.name}
-                  className="px-3 py-1 rounded-full border border-gray-200 text-gray-300 text-sm select-none"
-                  style={{ filter: 'blur(2px)' }}
+                  className={`px-2.5 py-1 rounded-full text-xs font-semibold whitespace-nowrap select-none ${
+                    p.id === profile.id
+                      ? 'bg-[#E94560] text-white border border-[#E94560]'
+                      : 'border border-gray-200 text-gray-500 bg-white'
+                  }`}
                 >
                   {p.name}
                 </span>
-              ))}
-            </div>
-          </motion.div>
-        </div>
+                {index < profiles.length - 1 && (
+                  <span className="text-gray-300 mx-1.5 text-sm select-none">→</span>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Mobile: vertical stack with down arrows */}
+          <div className="flex flex-col items-center md:hidden">
+            {profiles.map((p, index) => (
+              <div key={p.name} className="flex flex-col items-center">
+                <span
+                  className={`px-4 py-1.5 rounded-full text-sm font-semibold select-none ${
+                    p.id === profile.id
+                      ? 'bg-[#E94560] text-white border border-[#E94560]'
+                      : 'border border-gray-200 text-gray-500 bg-white'
+                  }`}
+                >
+                  {p.name}
+                </span>
+                {index < profiles.length - 1 && (
+                  <span className="text-gray-400 text-sm my-1 select-none">↓</span>
+                )}
+              </div>
+            ))}
+          </div>
+        </motion.div>
       </section>
 
       {/* ── Section 5: CTA Card ── */}
