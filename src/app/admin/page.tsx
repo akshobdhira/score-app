@@ -275,7 +275,7 @@ export default function AdminDashboard() {
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#F5F7FA' }}>
       {/* Header */}
       <header style={{ backgroundColor: '#1A1A2E' }} className="px-6 py-4 flex items-center justify-between">
-        <h1 className="text-white font-bold tracking-widest text-lg">SCORE — Admin</h1>
+        <h1 className="text-white font-bold tracking-widest text-lg">Immpact — Admin</h1>
         <button onClick={() => signOut({ callbackUrl: '/admin/login' })} className="text-white/60 text-sm hover:text-white transition-colors">
           Logout
         </button>

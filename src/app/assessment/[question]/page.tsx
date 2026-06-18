@@ -146,7 +146,7 @@ export default function QuestionPage() {
           >
             ← Back
           </button>
-          <span className="text-white font-bold tracking-widest text-lg">SCORE</span>
+          <span className="text-white font-bold tracking-widest text-lg">Immpact</span>
           <span className="text-white/50 text-sm">{questionNumber}/{questions.length}</span>
         </div>
 

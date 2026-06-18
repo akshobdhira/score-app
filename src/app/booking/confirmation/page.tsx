@@ -9,7 +9,7 @@ export default function BookingConfirmationPage() {
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#F5F7FA' }}>
       <header style={{ backgroundColor: '#1A1A2E' }} className="px-6 py-4 text-center">
-        <h1 className="text-white font-bold tracking-widest text-lg">SCORE</h1>
+        <h1 className="text-white font-bold tracking-widest text-lg">Immpact</h1>
       </header>
 
       <main className="flex-1 flex items-center justify-center px-5 py-8">
@@ -38,7 +38,7 @@ export default function BookingConfirmationPage() {
             <p className="text-sm font-semibold mb-2" style={{ color: '#1A1A2E' }}>What happens next:</p>
             <ul className="text-sm text-gray-500 flex flex-col gap-1.5">
               <li className="flex gap-2"><span style={{ color: '#27AE60' }}>1.</span> Check your inbox — you&apos;ll get a calendar invite with the Google Meet link</li>
-              <li className="flex gap-2"><span style={{ color: '#27AE60' }}>2.</span> Our expert reviews your SCORE assessment results before the session</li>
+              <li className="flex gap-2"><span style={{ color: '#27AE60' }}>2.</span> Our expert reviews your Immpact assessment results before the session</li>
               <li className="flex gap-2"><span style={{ color: '#27AE60' }}>3.</span> Join your personalised 1-on-1 session at the scheduled time</li>
             </ul>
           </div>

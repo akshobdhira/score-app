@@ -116,7 +116,7 @@ export default function BookingPage() {
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#F5F7FA' }}>
       <header style={{ backgroundColor: '#1A1A2E' }} className="px-6 py-4 text-center">
-        <h1 className="text-white font-bold tracking-widest text-lg">SCORE</h1>
+        <h1 className="text-white font-bold tracking-widest text-lg">Immpact</h1>
       </header>
 
       {/* Step indicator */}

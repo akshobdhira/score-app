@@ -236,7 +236,7 @@ export default function ThankYouPage() {
   // Share URLs
   const safePercentage = Math.max(0, Math.min(100, result.percentage))
   const shareText = encodeURIComponent(
-    `I just scored ${safePercentage}% on the SCORE Parenting Assessment! Find out your profile:`
+    `I just scored ${safePercentage}% on the Immpact Parenting Assessment! Find out your profile:`
   )
   const shareUrl = encodeURIComponent(`${window.location.origin}/results`)
   const whatsappUrl = `https://wa.me/?text=${shareText}%20${shareUrl}`

@@ -246,7 +246,7 @@ export default function ResultsPage() {
 
   // Share URLs
   const shareText = encodeURIComponent(
-    `I just scored ${normalizedScore.toFixed(1)}% on the SCORE Parenting Assessment! Find out your profile:`
+    `I just scored ${normalizedScore.toFixed(1)}% on the Immpact Parenting Assessment! Find out your profile:`
   )
   const shareUrl = encodeURIComponent(`${window.location.origin}/results`)
   const whatsappUrl = `https://wa.me/?text=${shareText}%20${shareUrl}`

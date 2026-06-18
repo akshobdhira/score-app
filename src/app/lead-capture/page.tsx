@@ -58,7 +58,7 @@ export default function LeadCapturePage() {
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#F5F7FA' }}>
       {/* Header */}
       <header style={{ backgroundColor: '#1A1A2E' }} className="px-6 py-4 text-center">
-        <h1 className="text-white font-bold tracking-widest text-lg">SCORE</h1>
+        <h1 className="text-white font-bold tracking-widest text-lg">Immpact</h1>
       </header>
 
       <main className="flex-1 max-w-xl mx-auto w-full px-5 py-8">

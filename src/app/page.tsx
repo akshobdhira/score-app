@@ -171,6 +171,10 @@ export default function LandingPage() {
         style={{ backgroundColor: NAVY, borderBottomColor: 'rgba(255,255,255,0.08)' }}
       >
         <div className="flex flex-wrap items-baseline gap-2 md:gap-3 min-w-0">
+          <span className="text-sm md:text-xl font-bold leading-tight tracking-widest" style={{ color: '#E94560' }}>
+            Immpact
+          </span>
+          <span className="text-white/40 text-sm md:text-base">|</span>
           <span className="text-sm md:text-xl font-bold leading-tight" style={{ color: '#FFFFFF' }}>
             NEW AGE PARENTING
           </span>

@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
 
       try {
         const { error } = await resend.emails.send({
-          from: 'SCORE by New Age Parenting <onboarding@resend.dev>',
+          from: 'Immpact by New Age Parenting <onboarding@resend.dev>',
           to: [recipient.parentEmail],
           subject: template.subject,
           html,
