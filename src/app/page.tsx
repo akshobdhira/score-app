@@ -216,7 +216,7 @@ export default function LandingPage() {
             style={{ color: '#6B7280' }}
           >
             Take the Quiz and find out exactly how influential you
-            are in shaping your child&apos;s career. Results in 20 minutes.
+            are in shaping your child&apos;s career. Results in 10 minutes.
           </motion.p>
 
           <motion.div
@@ -365,7 +365,7 @@ export default function LandingPage() {
             <p className="text-sm mb-8 leading-relaxed" style={{ color: BODY_TEXT }}>
               <span className="font-bold mr-2" style={{ color: CORAL }}>→</span>
               We&apos;ll ask you 40 questions across 5 areas of parenting influence.
-              In 20 minutes you&apos;ll have a tailored report showing exactly
+              In 10 minutes you&apos;ll have a tailored report showing exactly
               where to improve.
             </p>
 
