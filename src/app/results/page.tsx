@@ -124,7 +124,7 @@ function Speedometer({ score, profileName }: { score: number; profileName: strin
 
       {/* Score percentage */}
       <p className="text-3xl font-bold text-center mt-6" style={{ color: scoreColor }}>
-        {score.toFixed(1)}%
+        {Math.round(score)}%
       </p>
 
       {/* Profile name */}
@@ -189,7 +189,7 @@ function RadialRing({ score }: { score: number }) {
           fontWeight="bold"
           fill={ringColor}
         >
-          {score.toFixed(1)}%
+          {Math.round(score)}%
         </text>
 
         {/* Sub text */}
@@ -246,9 +246,9 @@ export default function ResultsPage() {
 
   // Share URLs
   const shareText = encodeURIComponent(
-    `I just scored ${normalizedScore.toFixed(1)}% on the Immpact Parenting Assessment! Find out your profile:`
+    `I just scored ${normalizedScore}% on the Immpact Parenting Assessment! Find out your profile:`
   )
-  const shareUrl = encodeURIComponent(`${window.location.origin}/results`)
+  const shareUrl = encodeURIComponent(window.location.origin)
   const whatsappUrl = `https://wa.me/?text=${shareText}%20${shareUrl}`
   const twitterUrl = `https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}`
   const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${shareUrl}`

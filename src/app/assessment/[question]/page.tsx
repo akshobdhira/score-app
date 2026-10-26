@@ -106,23 +106,28 @@ export default function QuestionPage() {
     sessionStorage.setItem('score_parent_info', JSON.stringify(parentForm))
     sessionStorage.setItem('score_result', JSON.stringify(result))
 
-    try {
-      const res = await fetch('/api/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          parentName: parentForm.parentName,
-          parentMobile: parentForm.parentPhone,
-          parentEmail: parentForm.parentEmail || '',
-          result,
-        }),
-      })
-      const data = await res.json()
-      if (data.submissionId) {
-        sessionStorage.setItem('score_submission_id', data.submissionId)
+    // Two attempts so a transient failure doesn't lose the lead; results still render from sessionStorage either way
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        const res = await fetch('/api/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            parentName: parentForm.parentName,
+            parentMobile: parentForm.parentPhone,
+            parentEmail: parentForm.parentEmail || '',
+            result,
+          }),
+        })
+        const data = await res.json()
+        if (data.submissionId) {
+          sessionStorage.setItem('score_submission_id', data.submissionId)
+          break
+        }
+        if (res.status < 500) break // validation or rate-limit errors won't succeed on retry
+      } catch {
+        // network error — retry once
       }
-    } catch {
-      // navigate anyway — data already in sessionStorage for results page
     }
 
     router.push('/results')

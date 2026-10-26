@@ -45,6 +45,14 @@ type MessageLog = {
   error: string | null
 }
 
+// Quote every cell, double inner quotes, and neutralise leading = + - @ so
+// parent-entered text can't break rows or run as a spreadsheet formula
+function csvCell(value: string | number | null | undefined): string {
+  let s = String(value ?? '')
+  if (/^[=+\-@\t\r]/.test(s)) s = `'${s}`
+  return `"${s.replace(/"/g, '""')}"`
+}
+
 const TEMPLATE_OPTIONS = [
   { id: 'book-session',   name: 'Book Your Free Session',        needsMeetingLink: true },
   { id: 'follow-up',      name: 'Follow-Up Nudge',               needsMeetingLink: true },
@@ -135,7 +143,8 @@ export default function AdminDashboard() {
       if (filter.booking === 'yes' && !s.has_booking) return false
       if (filter.booking === 'no' && s.has_booking) return false
       if (filter.dateFrom && new Date(s.created_at) < new Date(filter.dateFrom)) return false
-      if (filter.dateTo && new Date(s.created_at) > new Date(filter.dateTo)) return false
+      // Local end of day, so rows created on the "to" date are included
+      if (filter.dateTo && new Date(s.created_at) > new Date(`${filter.dateTo}T23:59:59.999`)) return false
       return true
     })
   }
@@ -233,19 +242,19 @@ export default function AdminDashboard() {
       headers.join(','),
       ...rows.map((r) => [
         new Date(r.created_at).toLocaleDateString(),
-        `"${r.parent_name || ''}"`,
-        `"${r.parent_mobile || ''}"`,
-        `"${r.parent_email || ''}"`,
+        r.parent_name,
+        r.parent_mobile,
+        r.parent_email,
         r.percentage,
-        `"${r.profile_name}"`,
-        r.child_class || '',
-        r.child_board || '',
+        r.profile_name,
+        r.child_class,
+        r.child_board,
         r.has_booking ? 'Yes' : 'No',
-        `"${r.bookings?.[0]?.child_name || ''}"`,
-        `"${r.bookings?.[0]?.child_age || ''}"`,
-        `"${r.bookings?.[0]?.preferred_time_slot || ''}"`,
-        r.bookings?.[0]?.created_at ? `"${new Date(r.bookings[0].created_at).toLocaleString()}"` : '',
-      ].join(',')),
+        r.bookings?.[0]?.child_name,
+        r.bookings?.[0]?.child_age,
+        r.bookings?.[0]?.preferred_time_slot,
+        r.bookings?.[0]?.created_at ? new Date(r.bookings[0].created_at).toLocaleString() : '',
+      ].map(csvCell).join(',')),
     ].join('\n')
 
     const blob = new Blob([csv], { type: 'text/csv' })

@@ -16,7 +16,9 @@ const securityHeaders = [
     key: 'Content-Security-Policy',
     value: [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+      // 'unsafe-eval' is only needed by the dev server's hot reload.
+      // ponytail: 'unsafe-inline' stays until Next.js nonce-based CSP is wired up via middleware.
+      `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === 'production' ? '' : " 'unsafe-eval'"}`,
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: blob: https://calendly.com",
       "font-src 'self'",

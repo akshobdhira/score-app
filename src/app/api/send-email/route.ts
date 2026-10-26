@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { Resend } from 'resend'
 import { createServiceClient } from '@/lib/supabase'
-import { getTemplate } from '@/lib/emailTemplates'
+import { escapeHtml, getTemplate } from '@/lib/emailTemplates'
 import { isValidOrigin } from '@/lib/rateLimit'
 import { z } from 'zod'
 
@@ -15,7 +15,7 @@ const sendEmailSchema = z.object({
     grade: z.string().nullable().optional(),
   })).min(1),
   templateId: z.string().min(1),
-  meetingLink: z.string().url().optional().or(z.literal('')),
+  meetingLink: z.string().url().regex(/^https?:\/\//i).optional().or(z.literal('')),
 })
 
 export async function POST(req: NextRequest) {
@@ -47,9 +47,9 @@ export async function POST(req: NextRequest) {
 
     for (const recipient of recipients) {
       const html = template.html({
-        parentName: recipient.parentName,
-        grade: recipient.grade,
-        meetingLink: meetingLink || undefined,
+        parentName: escapeHtml(recipient.parentName),
+        grade: recipient.grade ? escapeHtml(recipient.grade) : recipient.grade,
+        meetingLink: meetingLink ? escapeHtml(meetingLink) : undefined,
       })
 
       let status: 'sent' | 'failed' = 'sent'
@@ -57,7 +57,8 @@ export async function POST(req: NextRequest) {
 
       try {
         const { error } = await resend.emails.send({
-          from: 'Immpact by New Age Parenting <onboarding@resend.dev>',
+          // onboarding@resend.dev only delivers to the Resend account owner — set RESEND_FROM to a verified-domain sender
+          from: process.env.RESEND_FROM || 'Immpact by New Age Parenting <onboarding@resend.dev>',
           to: [recipient.parentEmail],
           subject: template.subject,
           html,
