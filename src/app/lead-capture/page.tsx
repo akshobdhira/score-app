@@ -34,24 +34,25 @@ export default function LeadCapturePage() {
     if (!validate()) return
     setLoading(true)
 
+    // Without a submissionId (initial save failed) skip the update but keep the parent's results
     const submissionId = sessionStorage.getItem('score_submission_id')
-    if (!submissionId) { router.push('/'); return }
-
-    try {
-      await fetch('/api/submit', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          submissionId,
-          childClass: form.childClass,
-          childBoard: form.childBoard,
-        }),
-      })
-      sessionStorage.setItem('score_child_info', JSON.stringify(form))
-      router.push('/thank-you')
-    } catch {
-      setLoading(false)
+    if (submissionId) {
+      try {
+        await fetch('/api/submit', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            submissionId,
+            childClass: form.childClass,
+            childBoard: form.childBoard,
+          }),
+        })
+      } catch {
+        // child details are optional for the report — continue
+      }
     }
+    sessionStorage.setItem('score_child_info', JSON.stringify(form))
+    router.push('/thank-you')
   }
 
   return (

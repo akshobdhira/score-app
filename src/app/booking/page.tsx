@@ -55,7 +55,7 @@ export default function BookingPage() {
   function validate() {
     const e: Record<string, string> = {}
     if (!form.parentName.trim()) e.parentName = 'Required'
-    if (!/^\d{10}$/.test(form.parentMobile.trim())) e.parentMobile = 'Enter a valid 10-digit number'
+    if (!/^[6-9]\d{9}$/.test(form.parentMobile.trim())) e.parentMobile = 'Enter a valid 10-digit Indian mobile number'
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.parentEmail.trim())) e.parentEmail = 'Enter a valid email address'
     if (!form.childName.trim()) e.childName = 'Required'
     if (!form.childAge.trim()) e.childAge = 'Required'
@@ -72,23 +72,26 @@ export default function BookingPage() {
 
     const submissionId = sessionStorage.getItem('score_submission_id')
 
-    try {
-      await fetch('/api/booking', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...form,
-          preferredTimeSlot: 'Via Calendly',
-          submissionId,
-        }),
-      })
-      setStep('calendly')
-    } catch {
-      // still proceed to Calendly even if DB save fails
-      setStep('calendly')
-    } finally {
-      setLoading(false)
+    // Two attempts so a transient failure doesn't drop the booking from the admin view.
+    // Calendly still captures the booking, so the parent always proceeds.
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        const res = await fetch('/api/booking', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ...form,
+            preferredTimeSlot: 'Via Calendly',
+            submissionId,
+          }),
+        })
+        if (res.status < 500) break
+      } catch {
+        // network error — retry once
+      }
     }
+    setStep('calendly')
+    setLoading(false)
   }
 
   function field(label: string, key: keyof typeof form, type = 'text', placeholder = '') {

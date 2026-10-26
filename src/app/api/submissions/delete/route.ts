@@ -2,18 +2,27 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { createServiceClient } from '@/lib/supabase'
+import { isValidOrigin } from '@/lib/rateLimit'
+import { z } from 'zod'
+
+const deleteSchema = z.object({ ids: z.array(z.string().uuid()).min(1).max(500) })
 
 export async function DELETE(req: NextRequest) {
+  if (!isValidOrigin(req)) {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  }
+
   const session = await getServerSession(authOptions)
   if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   try {
-    const { ids } = await req.json() as { ids: string[] }
-    if (!ids || ids.length === 0) {
-      return NextResponse.json({ error: 'No IDs provided' }, { status: 400 })
+    const parsed = deleteSchema.safeParse(await req.json())
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Invalid request data' }, { status: 400 })
     }
+    const { ids } = parsed.data
 
     const supabase = createServiceClient()
 

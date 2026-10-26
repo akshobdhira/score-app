@@ -6,6 +6,16 @@ export interface EmailTemplate {
   html: (params: { parentName: string; grade?: string | null; meetingLink?: string }) => string
 }
 
+// Every value put into template HTML comes from a public form — escape it
+export function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
 const baseStyle = `
   font-family: 'Helvetica Neue', Arial, sans-serif;
   background-color: #F5F7FA;

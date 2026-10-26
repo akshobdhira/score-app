@@ -21,6 +21,9 @@ export function getIP(req: NextRequest): string {
   )
 }
 
+// ponytail: read-then-write, so a burst of concurrent requests can slip a few past
+// the limit. Move the increment into a Postgres function (single UPDATE ... RETURNING)
+// if abuse ever shows up in rate_limits.
 export async function checkRateLimit(
   key: string,
   limit: number,

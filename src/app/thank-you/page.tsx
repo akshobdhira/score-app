@@ -207,7 +207,7 @@ function SpiderChart({ categoryScores }: { categoryScores: CategoryScore[] }) {
 export default function ThankYouPage() {
   const router = useRouter()
   const [result, setResult] = useState<AssessmentResult | null>(null)
-  const [childInfo, setChildInfo] = useState<{ childClass: string; childSchool: string; childBoard: string } | null>(null)
+  const [childInfo, setChildInfo] = useState<{ childClass: string; childBoard: string } | null>(null)
   const [pdfLoading, setPdfLoading] = useState(false)
 
   useEffect(() => {
@@ -238,7 +238,7 @@ export default function ThankYouPage() {
   const shareText = encodeURIComponent(
     `I just scored ${safePercentage}% on the Immpact Parenting Assessment! Find out your profile:`
   )
-  const shareUrl = encodeURIComponent(`${window.location.origin}/results`)
+  const shareUrl = encodeURIComponent(window.location.origin)
   const whatsappUrl = `https://wa.me/?text=${shareText}%20${shareUrl}`
   const twitterUrl = `https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}`
   const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${shareUrl}`

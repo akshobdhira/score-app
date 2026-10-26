@@ -2,6 +2,13 @@ import NextAuth, { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { NextRequest, NextResponse } from 'next/server'
 import { checkRateLimit, getIP } from '@/lib/rateLimit'
+import { createHash, timingSafeEqual } from 'crypto'
+
+// Hash first so inputs of any length compare in constant time
+function safeEqual(a: string, b: string): boolean {
+  const hash = (s: string) => createHash('sha256').update(s).digest()
+  return timingSafeEqual(hash(a), hash(b))
+}
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -14,11 +21,12 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         const validUsername = process.env.ADMIN_USERNAME
         const validPassword = process.env.ADMIN_PASSWORD
+        if (!validUsername || !validPassword || !credentials) return null
 
-        if (
-          credentials?.username === validUsername &&
-          credentials?.password === validPassword
-        ) {
+        // Both checks always run so timing never reveals which one failed
+        const userOk = safeEqual(credentials.username, validUsername)
+        const passOk = safeEqual(credentials.password, validPassword)
+        if (userOk && passOk) {
           return { id: '1', name: 'Admin' }
         }
         return null

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase'
 import { checkRateLimit, getIP, isValidOrigin } from '@/lib/rateLimit'
 import { initialSubmitSchema, updateChildSchema } from '@/lib/schemas'
+import { calculateResults } from '@/lib/scoring'
 
 // POST — called from assessment modal: saves parent contact + result, returns submissionId
 export async function POST(req: NextRequest) {
@@ -24,7 +25,8 @@ export async function POST(req: NextRequest) {
     if (!parsed.success) {
       return NextResponse.json({ error: 'Invalid request data' }, { status: 400 })
     }
-    const { parentName, parentMobile, parentEmail, result } = parsed.data
+    const { parentName, parentMobile, parentEmail } = parsed.data
+    const result = calculateResults(parsed.data.result.answers)
 
     const supabase = createServiceClient()
     const { data, error } = await supabase
@@ -56,6 +58,14 @@ export async function POST(req: NextRequest) {
 export async function PATCH(req: NextRequest) {
   if (!isValidOrigin(req)) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  }
+
+  const { allowed } = await checkRateLimit(`submit-patch:${getIP(req)}`, 10, 5)
+  if (!allowed) {
+    return NextResponse.json(
+      { error: 'Too many requests. Please try again in 5 minutes.' },
+      { status: 429 }
+    )
   }
 
   try {

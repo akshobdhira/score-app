@@ -1,40 +1,24 @@
 import { z } from 'zod'
+import { questions } from './questions'
 
 const CLASS_OPTIONS = ['Grade 9', 'Grade 10', 'Grade 11', 'Grade 12'] as const
 const BOARD_OPTIONS = ['CBSE', 'ICSE', 'IB', 'Cambridge (IGCSE)', 'State Board', 'Other'] as const
-const TIME_SLOTS = [
-  'Weekday Morning (9am–12pm)',
-  'Weekday Afternoon (12pm–4pm)',
-  'Weekday Evening (6pm–9pm)',
-  'Weekend Morning (9am–12pm)',
-  'Weekend Afternoon (12pm–4pm)',
-] as const
+const INDIAN_MOBILE = /^[6-9]\d{9}$/
 
-const resultSchema = z.object({
-  totalScore: z.number().min(40).max(200),
-  maxScore: z.number().min(1),
-  percentage: z.number().min(0).max(100),
-  profile: z.object({
-    id: z.string().min(1),
-    name: z.string().min(1),
-  }),
-  categoryScores: z.array(
-    z.object({
-      category: z.string().min(1),
-      score: z.number(),
-      maxScore: z.number(),
-      percentage: z.number().min(0).max(100),
-    })
-  ).length(5),
-  answers: z.record(z.string(), z.number()),
-})
+// Only the raw answers are trusted — the server recomputes every score from them
+const answersSchema = z
+  .record(z.string(), z.union([z.literal(1), z.literal(2.5), z.literal(5)]))
+  .refine(
+    (a) => Object.keys(a).length === questions.length && questions.every((q) => String(q.id) in a),
+    'Every question must be answered exactly once'
+  )
 
-// Initial submit: parent contact info + assessment result (no child info yet)
+// Initial submit: parent contact info + assessment answers (no child info yet)
 export const initialSubmitSchema = z.object({
   parentName: z.string().trim().min(1).max(100),
-  parentMobile: z.string().regex(/^[6-9]\d{9}$/, 'Must be a valid 10-digit Indian mobile'),
+  parentMobile: z.string().regex(INDIAN_MOBILE, 'Must be a valid 10-digit Indian mobile'),
   parentEmail: z.string().email().optional().or(z.literal('')),
-  result: resultSchema,
+  result: z.object({ answers: answersSchema }),
 })
 
 // Child info update: called from lead-capture to fill in school details
@@ -44,18 +28,10 @@ export const updateChildSchema = z.object({
   childBoard: z.enum(BOARD_OPTIONS),
 })
 
-// Legacy alias kept so any direct import of submitSchema still works
-export const submitSchema = z.object({
-  childClass: z.enum(CLASS_OPTIONS),
-  childSchool: z.string().trim().min(1).max(200),
-  childBoard: z.enum(BOARD_OPTIONS),
-  result: resultSchema,
-})
-
 export const bookingSchema = z.object({
   submissionId: z.string().uuid().nullable().optional(),
   parentName: z.string().trim().min(1).max(100),
-  parentMobile: z.string().regex(/^\d{10}$/, 'Must be a 10-digit number'),
+  parentMobile: z.string().regex(INDIAN_MOBILE, 'Must be a valid 10-digit Indian mobile'),
   parentEmail: z.string().email(),
   childName: z.string().trim().min(1).max(100),
   childAge: z.string().trim().min(1).max(10),

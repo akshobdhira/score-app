@@ -2,7 +2,7 @@
 
 import { AssessmentResult } from '@/types'
 
-export async function generatePDF(result: AssessmentResult, childInfo: { childClass: string; childSchool: string; childBoard: string }) {
+export async function generatePDF(result: AssessmentResult, childInfo: { childClass: string; childBoard: string }) {
   const { jsPDF } = await import('jspdf')
   const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' })
 
@@ -44,7 +44,7 @@ export async function generatePDF(result: AssessmentResult, childInfo: { childCl
   doc.setTextColor(...darkText)
   doc.setFontSize(9)
   doc.setFont('helvetica', 'normal')
-  doc.text(`Class: ${childInfo.childClass}   |   School: ${childInfo.childSchool}   |   Board: ${childInfo.childBoard}`, pageW / 2, 74, { align: 'center' })
+  doc.text(`Class: ${childInfo.childClass}   |   Board: ${childInfo.childBoard}`, pageW / 2, 74, { align: 'center' })
 
   // Profile description
   doc.setFontSize(11)
